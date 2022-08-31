@@ -23,13 +23,6 @@ dependencies = [
 
 [project.optional-dependencies]
 
-alt = [
-    "altair >= 4.2.0",
-    "vega < 3.6",
-    "altair_saver",
-    "selenium<4.3.0",
-]
-
 dev = [
     "mypy",
     "flake8 >= 4.0, <5.0",
@@ -39,17 +32,6 @@ dev = [
 ]
 
 test = ["pytest >= 7.1", "pytest-cov >= 3.0.0"]
-
-doc = [
-    "sphinx",
-    "myst-parser",
-    "nbsphinx",
-    # "sphinx-material >= 0.0.35",
-    "pydata-sphinx-theme",
-    "sphinx-autodoc-typehints >= 1.18.3",
-    "sphinx-gallery",
-    # "myst-nb",
-]
 
 [tool.setuptools_scm]
 version_scheme = "guess-next-dev"

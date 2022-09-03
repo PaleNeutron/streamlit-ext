@@ -1,6 +1,6 @@
 # streamlit-ext
 
-Small handy widgets for streamlit
+A small handy extension for streamlit
 
 e.g. download button which won't cause rerun, set page width function, etc.
 

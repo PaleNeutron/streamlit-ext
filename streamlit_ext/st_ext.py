@@ -51,6 +51,9 @@ def download_button(
     download_link(your_df, 'YOUR_DF.csv', 'Click to download data!')
     download_link(your_str, 'YOUR_STRING.txt', 'Click to download text!')
     """
+    
+    # inspired by https://gist.github.com/chad-m/6be98ed6cf1c4f17d09b7f6e5ca2978f
+    
     if pickle_it:
         try:
             object_to_download = pickle.dumps(object_to_download)

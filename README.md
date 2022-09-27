@@ -1,6 +1,6 @@
 # streamlit-ext
 
-Small handy widgets for streamlit
+A small handy extension for streamlit
 
 ## Usage
 

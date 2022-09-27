@@ -13,14 +13,14 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.37.1
+    rev: v2.38.2
     hooks:
       - id: pyupgrade
         args:
           - --py3-plus
           - --keep-runtime-typing
   - repo: https://github.com/myint/autoflake
-    rev: v1.4
+    rev: v1.6.1
     hooks:
       - id: autoflake
         args:
@@ -33,7 +33,7 @@ repos:
           - __init__.py
           - --remove-duplicate-keys
   - repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
+    rev: 5.0.4
     hooks:
       - id: flake8
         exclude: __init__.py
@@ -50,11 +50,11 @@ repos:
         name: isort (pyi)
         types: [pyi]
   - repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 22.8.0
     hooks:
       - id: black
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.961
+    rev: v0.971
     hooks:
       - id: mypy
         exclude: tests/.+\.py

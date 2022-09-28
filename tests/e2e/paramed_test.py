@@ -5,12 +5,25 @@ import streamlit as st
 import streamlit_ext as ste
 
 option = ste.selectbox(
-    "How would you like to be contacted?",
+    "A form will show up if you select less than 10",
     range(100),
     key="selectbox",
 )
 
 st.write("You selected:", option)
+
+if option < 10:
+    with st.form("my_form"):
+        st.write("Element inside a form will not sync to url until click submit buttom")
+        slider_val = ste.slider("Form slider", key="form_slider")
+        checkbox_val = ste.checkbox("Form checkbox", key="form_checkbox")
+
+        # Every form must have a submit button.
+        submitted = st.form_submit_button("Submit")
+        if submitted:
+            st.write("slider", slider_val, "checkbox", checkbox_val)
+
+st.write("Outside the form")
 
 d = ste.date_input("When's your birthday", date(2019, 7, 6), key="date_input")
 st.write("Your birthday is:", d)

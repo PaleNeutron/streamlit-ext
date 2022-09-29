@@ -1,10 +1,10 @@
 import base64
-import json
-import pickle
+import io
 import re
 import uuid
-from io import BytesIO
-from typing import Union
+from typing import Optional, Union
+
+from streamlit.elements.button import DownloadButtonDataType
 
 try:
     import pandas as pd
@@ -14,6 +14,8 @@ except ImportError:
     HAS_PD = False
 
 import streamlit as st
+
+DownloadButtonDataType = Union[DownloadButtonDataType, "pd.DataFrame"]
 
 
 def set_width(width: str = "46rem") -> None:
@@ -29,58 +31,66 @@ def set_width(width: str = "46rem") -> None:
 
 def download_button(
     button_text: str,
-    object_to_download: Union[bytes, "pd.DataFrame", object],
+    data: DownloadButtonDataType,
     download_filename: str,
-    pickle_it: bool = False,
+    mime: Optional[str] = None,
 ) -> str:
-    """
-    Generates a link to download the given object_to_download.
-    Params:
-    ------
-    object_to_download:  The object to be downloaded.
-    download_filename (str): filename and extension of file. e.g. mydata.csv,
-    some_txt_output.txt download_link_text (str): Text to display for download
-    link.
-    button_text (str): Text to display on download button (e.g. 'click here to download file')
-    pickle_it (bool): If True, pickle file.
+    """Generates a link to download the given data, suport file-like object and pd.DataFrame.
+    Params
+
+    Args:
+        button_text: text show on page.
+        data: file-like object or pd.DataFrame.
+        download_filename: filename and extension of file. e.g. mydata.csv,
+
+    Raises:
+        RuntimeError: when data type is not supported
+
     Returns:
-    -------
-    (str): the anchor tag to download object_to_download
+        the anchor tag to download object_to_download
+
     Examples:
-    --------
-    download_link(your_df, 'YOUR_DF.csv', 'Click to download data!')
-    download_link(your_str, 'YOUR_STRING.txt', 'Click to download text!')
+        download_button('Click to download data!', your_df, 'YOUR_DF.xlsx')
+        download_button('Click to download text!', your_str.encode(), 'YOUR_STRING.txt')
     """
-    
+
     # inspired by https://gist.github.com/chad-m/6be98ed6cf1c4f17d09b7f6e5ca2978f
-    
-    if pickle_it:
-        try:
-            object_to_download = pickle.dumps(object_to_download)
-        except pickle.PicklingError as e:
-            st.write(e)
-            return ""
 
+    data_as_bytes: bytes
+    mimetype = mime
+    if isinstance(data, str):
+        data_as_bytes = data.encode()
+        mimetype = mimetype or "text/plain"
+    elif isinstance(data, io.TextIOWrapper):
+        string_data = data.read()
+        data_as_bytes = string_data.encode()
+        mimetype = mimetype or "text/plain"
+    # Assume bytes; try methods until we run out.
+    elif isinstance(data, bytes):
+        data_as_bytes = data
+        mimetype = mimetype or "application/octet-stream"
+    elif isinstance(data, io.BytesIO):
+        data.seek(0)
+        data_as_bytes = data.getvalue()
+        mimetype = mimetype or "application/octet-stream"
+    elif isinstance(data, io.BufferedReader):
+        data.seek(0)
+        data_as_bytes = data.read()
+        mimetype = mimetype or "application/octet-stream"
+    elif isinstance(data, io.RawIOBase):
+        data.seek(0)
+        data_as_bytes = data.read() or b""
+        mimetype = mimetype or "application/octet-stream"
+    elif HAS_PD and isinstance(data, pd.DataFrame):
+        bio = io.BytesIO()
+        data.to_excel(bio)
+        bio.seek(0)
+        data_as_bytes = bio.read()
+        mimetype = mimetype or "application/octet-stream"
     else:
-        if isinstance(object_to_download, bytes):
-            pass
+        raise RuntimeError("Invalid binary data format: %s" % type(data))
 
-        elif HAS_PD and isinstance(object_to_download, pd.DataFrame):
-            bio = BytesIO()
-            object_to_download.to_excel(bio)
-            bio.seek(0)
-            object_to_download = bio.read()
-        # Try JSON encode for everything else
-        else:
-            object_to_download = json.dumps(object_to_download)
-
-    if isinstance(object_to_download, bytes):
-        b64 = base64.b64encode(object_to_download).decode()
-    elif isinstance(object_to_download, str):
-        b64 = base64.b64encode(object_to_download.encode()).decode()
-    else:
-        raise ValueError("object_to_download must be bytes or str")
-
+    b64 = base64.b64encode(data_as_bytes).decode()
     button_uuid = str(uuid.uuid4()).replace("-", "")
     button_id = re.sub(r"\d+", "", button_uuid)
 

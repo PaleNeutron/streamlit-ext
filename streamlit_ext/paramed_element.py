@@ -17,14 +17,22 @@ SYNCED_QUERY_KEYS = set()
 super_get_widget_id = stw._get_widget_id
 
 
+def _build_sync_key(user_key: Optional[str]) -> str:
+    return f"SYNC_{user_key}"
+
+
 def _get_widget_id(
     element_type: str, element_proto: stw.WidgetProto, user_key: Optional[str] = None
 ) -> str:
-    if user_key in SYNCED_QUERY_KEYS:
+    synced_user_key = _build_sync_key(user_key)
+    if synced_user_key in SYNCED_QUERY_KEYS:
         h = hashlib.new("md5")
         h.update(element_type.encode("utf-8"))
+        # element_proto.SerializeToString contains the widget's default value
+        # when default value is changed, the widget id will changed
+        # and can not sync with real widget in webpage, remove it
         # h.update(element_proto.SerializeToString())
-        return f"{stw.GENERATED_WIDGET_KEY_PREFIX}-{h.hexdigest()}-{user_key}"
+        return f"{stw.GENERATED_WIDGET_KEY_PREFIX}-{h.hexdigest()}-{synced_user_key}"
     else:
         s: str = super_get_widget_id(element_type, element_proto, user_key)
         return s
@@ -82,8 +90,10 @@ def param_sync_builder(f: Callable[[Any], Any]) -> Callable[[Any], Any]:
             query_label = kwargs["key"]
             params = st.experimental_get_query_params()
             bargs = sig.bind(*args, **kwargs).arguments
+            # regist this key to global module，when call _get_widget_id
+            # it will generate widget it without default value
+            SYNCED_QUERY_KEYS.add(_build_sync_key(query_label))
             if query_label in params:
-                SYNCED_QUERY_KEYS.add(query_label)
                 vp_list = [_trans_query_params(i) for i in params[query_label]]
                 PARAM_TRANS_DICT[f](vp_list, bargs)
             v = f(**bargs)  # type: ignore

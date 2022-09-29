@@ -8,7 +8,7 @@ from streamlit.elements.button import DownloadButtonDataType
 
 try:
     import pandas as pd
-
+    import openpyxl # needed for pd.to_excel
     HAS_PD = True
 except ImportError:
     HAS_PD = False

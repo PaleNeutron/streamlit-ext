@@ -7,15 +7,13 @@ name = "streamlit-ext"
 description = "Small handy widgets for streamlit, e.g. download button which won't cause rerun, set page width"
 readme = "README.md"
 authors = [{ name = "John Lyu", email = "paleneutron@outlook.com" }]
-keywords = ["streamlit", "widgets",]
+keywords = ["streamlit", "widgets"]
 license = { text = "MIT" }
 requires-python = ">=3.8"
 
 dynamic = ["version"]
 
-dependencies = [
-    "streamlit",
-]
+dependencies = ["streamlit"]
 
 
 [project.urls]
@@ -31,7 +29,7 @@ dev = [
     "pandas-stubs >= 1.4.3",
 ]
 
-test = ["pytest >= 7.1", "pytest-cov >= 3.0.0"]
+test = ["pytest >= 7.1", "pytest-cov >= 3.0.0", "pandas", "openpyxl"]
 
 [tool.setuptools_scm]
 version_scheme = "guess-next-dev"

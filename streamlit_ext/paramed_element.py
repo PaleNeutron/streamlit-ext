@@ -2,7 +2,7 @@ import hashlib
 import inspect
 from datetime import date, datetime, time
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional, Union, KeysView
+from typing import Any, Callable, Dict, KeysView, List, Optional, Union
 
 import streamlit as st
 
@@ -38,11 +38,10 @@ def _get_widget_id(
         return s
 
 
-
 stw._get_widget_id = _get_widget_id
 
 
-def index2(x: Any, somelist: Union[List[Any], KeysView]) -> Optional[int]:
+def index2(x: Any, somelist: Union[List[Any], KeysView[Any]]) -> Optional[int]:
     somelist = list(somelist)
     return somelist.index(x) if x in somelist else None
 

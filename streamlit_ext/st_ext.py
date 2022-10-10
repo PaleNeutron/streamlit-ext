@@ -7,15 +7,17 @@ from typing import Optional, Union
 from streamlit.elements.button import DownloadButtonDataType
 
 try:
+    import openpyxl  # noqa: F401 # needed for pd.to_excel
     import pandas as pd
-    import openpyxl # needed for pd.to_excel
+    from pandas.io.formats.style import Styler
+
     HAS_PD = True
 except ImportError:
     HAS_PD = False
 
 import streamlit as st
 
-DownloadButtonDataType = Union[DownloadButtonDataType, "pd.DataFrame"]
+DownloadButtonDataType = Union[DownloadButtonDataType, "pd.DataFrame", "Styler"]
 
 
 def set_width(width: str = "46rem") -> None:
@@ -30,9 +32,9 @@ def set_width(width: str = "46rem") -> None:
 
 
 def download_button(
-    button_text: str,
+    label: str,
     data: DownloadButtonDataType,
-    download_filename: str,
+    file_name: Optional[str] = None,
     mime: Optional[str] = None,
 ) -> str:
     """Generates a link to download the given data, suport file-like object and pd.DataFrame.
@@ -81,7 +83,7 @@ def download_button(
         data.seek(0)
         data_as_bytes = data.read() or b""
         mimetype = mimetype or "application/octet-stream"
-    elif HAS_PD and isinstance(data, pd.DataFrame):
+    elif HAS_PD and hasattr(data, "to_excel"):
         bio = io.BytesIO()
         data.to_excel(bio)
         bio.seek(0)
@@ -121,7 +123,7 @@ def download_button(
 
     dl_link = (
         custom_css
-        + f'<a download="{download_filename}" id="{button_id}" href="data:file/txt;base64,{b64}">{button_text}</a><br></br>'
+        + f'<a download="{file_name}" id="{button_id}" href="data:file/txt;base64,{b64}">{label}</a><br></br>'
     )
     st.markdown(dl_link, unsafe_allow_html=True)
     return dl_link

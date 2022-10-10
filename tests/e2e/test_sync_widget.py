@@ -12,7 +12,9 @@ option = ste.selectbox(
 
 st.write("You selected:", option)
 
-sidebar_checkbox = ste.sidebar.checkbox('a sidebar checkbox', value=False, key="sidebar")
+sidebar_checkbox = ste.sidebar.checkbox(
+    "a sidebar checkbox", value=False, key="sidebar"
+)
 
 ste.sidebar.write("sidebar selected: ", sidebar_checkbox)
 

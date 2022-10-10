@@ -12,6 +12,10 @@ option = ste.selectbox(
 
 st.write("You selected:", option)
 
+sidebar_checkbox = ste.sidebar.checkbox('a sidebar checkbox', value=False, key="sidebar")
+
+ste.sidebar.write("sidebar selected: ", sidebar_checkbox)
+
 if option < 10:
     with st.form("my_form"):
         st.write("Element inside a form will not sync to url until click submit buttom")

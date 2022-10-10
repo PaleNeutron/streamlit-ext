@@ -2,6 +2,13 @@
 
 A small handy extension for streamlit
 
+
+## installation
+
+```bash
+pip install streamlit-ext
+```
+
 ## Usage
 
 ### sync widgets' value with urls
@@ -55,10 +62,4 @@ st.title('streamlit-ext')
 ste.set_page_width("60em")
 
 st.write("a quick fox jump..."*100)
-```
-
-## installation
-
-```bash
-pip install streamlit-ext
 ```

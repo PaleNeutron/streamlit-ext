@@ -1,9 +1,8 @@
-import collections
 import hashlib
 import inspect
 from datetime import date, datetime, time
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union, KeysView
 
 import streamlit as st
 
@@ -39,10 +38,11 @@ def _get_widget_id(
         return s
 
 
+
 stw._get_widget_id = _get_widget_id
 
 
-def index2(x: Any, somelist: Union[List[Any], collections.KeysView]) -> Optional[int]:
+def index2(x: Any, somelist: Union[List[Any], KeysView]) -> Optional[int]:
     somelist = list(somelist)
     return somelist.index(x) if x in somelist else None
 

@@ -1,3 +1,4 @@
+import collections
 import hashlib
 import inspect
 from datetime import date, datetime, time
@@ -41,7 +42,8 @@ def _get_widget_id(
 stw._get_widget_id = _get_widget_id
 
 
-def index2(x: Any, somelist: List[Any]) -> Optional[int]:
+def index2(x: Any, somelist: Union[List[Any], collections.KeysView]) -> Optional[int]:
+    somelist = list(somelist)
     return somelist.index(x) if x in somelist else None
 
 

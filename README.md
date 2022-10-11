@@ -1,6 +1,36 @@
 # streamlit-ext
 
-A small handy extension for streamlit
+A small handy extension for streamlit, keep your widget values in url, and share it with your friends.
+
+Use widget from `stramlit-ext` just as `streamlit` and pass a unique `key` to it!
+
+![example gif](https://raw.githubusercontent.com/PaleNeutron/streamlit-ext/master/docs/examples.gif)
+
+```
+import numpy as np
+import pandas as pd
+
+import streamlit as st
+import streamlit_ext as ste
+
+df = pd.DataFrame(np.random.rand(10, 5))
+
+
+option = ste.selectbox(
+    "A form will show up if you select less than 10",
+    range(100),
+    key="selectbox",
+)
+
+st.write("You selected:", option)
+
+age = ste.slider("How old are you?", 0, 130, 25, key="slider1")
+st.write("I'm ", age, "years old")
+
+ste.download_button("Click to download data!", df, "YOUR_DF.xlsx")
+ste.download_button("Click to download text!", b"text content", "YOUR_STRING.txt")
+```
+
 
 
 ## installation

@@ -6,7 +6,7 @@ Use widget from `stramlit-ext` just as `streamlit` and pass a unique `key` to it
 
 ![example gif](https://raw.githubusercontent.com/PaleNeutron/streamlit-ext/master/docs/examples.gif)
 
-```
+```python
 import numpy as np
 import pandas as pd
 

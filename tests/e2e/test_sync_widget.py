@@ -1,8 +1,13 @@
+import sys
 from datetime import date, datetime, time
+from pathlib import Path
 
 import streamlit as st
 
-import streamlit_ext as ste
+# add project root to path
+sys.path.append(Path(__file__).parents[3])
+
+import streamlit_ext as ste  # noqa: E402
 
 option = ste.selectbox(
     "A form will show up if you select less than 10",

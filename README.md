@@ -1,5 +1,6 @@
 # streamlit-ext
 
+[![PyPI Latest Release](https://img.shields.io/pypi/v/streamlit-ext.svg)](https://pypi.org/project/streamlit-ext/)
 [![streamlit-ext-demo](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://paleneutron-streamlit-ext-testse2etest-sync-widget-orfpyh.streamlitapp.com/)
 
 A small handy extension for streamlit, keep your widget values in url, and share it with your friends.

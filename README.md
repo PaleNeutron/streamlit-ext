@@ -1,5 +1,7 @@
 # streamlit-ext
 
+[![streamlit-ext-demo](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://paleneutron-streamlit-ext-testse2etest-sync-widget-orfpyh.streamlitapp.com/)
+
 A small handy extension for streamlit, keep your widget values in url, and share it with your friends.
 
 Use widget from `stramlit-ext` just as `streamlit` and pass a unique `key` to it!

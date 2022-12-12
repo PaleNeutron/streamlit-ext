@@ -101,13 +101,13 @@ def download_button(
             #{button_id} {{
                 background-color: rgb(255, 255, 255);
                 color: rgb(38, 39, 48);
-                padding: 0.25em 0.38em;
+                padding: 0.4em 0.6em;
                 position: relative;
                 text-decoration: none;
                 border-radius: 4px;
                 border-width: 1px;
                 border-style: solid;
-                border-color: rgb(230, 234, 241);
+                border-color: rgba(49, 51, 63, 0.2);
                 border-image: initial;
             }}
             #{button_id}:hover {{
@@ -123,7 +123,10 @@ def download_button(
 
     dl_link = (
         custom_css
-        + f'<a download="{file_name}" id="{button_id}" href="data:file/txt;base64,{b64}">{label}</a><br></br>'
+        + f'<a class="steDownloadButton" download="{file_name}" id="{button_id}" '
+        f'href="data:file/txt;base64,{b64}">{label}</a><br></br>'
     )
-    st.markdown(dl_link, unsafe_allow_html=True)
+
+    div_dl_link = f"""<div class="row-widget stDownloadButton">{dl_link}</div>"""
+    st.markdown(div_dl_link, unsafe_allow_html=True)
     return dl_link

@@ -5,16 +5,26 @@ from functools import wraps
 from typing import Any, Callable, Dict, KeysView, List, Optional, Union
 
 import streamlit as st
+from packaging import version
 
 try:
     import streamlit.state.widgets as stw
 except ImportError:
-    import streamlit.runtime.state.widgets as stw
+    try:
+        # in version >= 1.19.0, streamlit use compute_widget_id from st.runtime.state.common
+        import streamlit.runtime.state.common as stw
+    except ImportError:
+        import streamlit.runtime.state.widgets as stw
+
 
 SYNCED_QUERY_KEYS = set()
 
+if version.parse(st.__version__) < version.parse("1.19.0"):
+    _get_widget_id_func = "_get_widget_id"
+else:
+    _get_widget_id_func = "compute_widget_id"
 
-super_get_widget_id = stw._get_widget_id
+super_get_widget_id = getattr(stw, _get_widget_id_func)
 
 
 def _build_sync_key(user_key: Optional[str]) -> str:
@@ -38,7 +48,7 @@ def _get_widget_id(
         return s
 
 
-stw._get_widget_id = _get_widget_id
+setattr(stw, _get_widget_id_func, _get_widget_id)
 
 
 def index2(x: Any, somelist: Union[List[Any], KeysView[Any]]) -> Optional[int]:

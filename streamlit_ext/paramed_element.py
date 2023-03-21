@@ -6,15 +6,12 @@ from typing import Any, Callable, Dict, KeysView, List, Optional, Union
 
 import streamlit as st
 from packaging import version
+from streamlit.runtime.state.common import GENERATED_WIDGET_ID_PREFIX
 
 try:
     import streamlit.state.widgets as stw
 except ImportError:
-    try:
-        # in version >= 1.19.0, streamlit use compute_widget_id from st.runtime.state.common
-        import streamlit.runtime.state.common as stw
-    except ImportError:
-        import streamlit.runtime.state.widgets as stw
+    import streamlit.runtime.state.widgets as stw
 
 
 SYNCED_QUERY_KEYS = set()
@@ -31,7 +28,7 @@ def _build_sync_key(user_key: Optional[str]) -> str:
     return f"SYNC_{user_key}"
 
 
-def _get_widget_id(
+def compute_widget_id_ext(
     element_type: str, element_proto: stw.WidgetProto, user_key: Optional[str] = None
 ) -> str:
     synced_user_key = _build_sync_key(user_key)
@@ -42,13 +39,13 @@ def _get_widget_id(
         # when default value is changed, the widget id will changed
         # and can not sync with real widget in webpage, remove it
         # h.update(element_proto.SerializeToString())
-        return f"{stw.GENERATED_WIDGET_KEY_PREFIX}-{h.hexdigest()}-{synced_user_key}"
+        return f"{GENERATED_WIDGET_ID_PREFIX}-{h.hexdigest()}-{synced_user_key}"
     else:
         s: str = super_get_widget_id(element_type, element_proto, user_key)
         return s
 
 
-setattr(stw, _get_widget_id_func, _get_widget_id)
+setattr(stw, _get_widget_id_func, compute_widget_id_ext)
 
 
 def index2(x: Any, somelist: Union[List[Any], KeysView[Any]]) -> Optional[int]:
@@ -92,10 +89,10 @@ PARAM_TRANS_DICT: Dict[
 ] = {}
 
 
-def param_sync_builder(f: Callable[[Any], Any]) -> Callable[[Any], Any]:
-    sig = inspect.signature(f)
+def param_sync_builder(st_element: Callable[[Any], Any]) -> Callable[[Any], Any]:
+    sig = inspect.signature(st_element)
 
-    @wraps(f)
+    @wraps(st_element)
     def decorated(*args: Any, **kwargs: Any) -> Any:
         if "key" in kwargs:
             query_label = kwargs["key"]
@@ -106,13 +103,13 @@ def param_sync_builder(f: Callable[[Any], Any]) -> Callable[[Any], Any]:
             SYNCED_QUERY_KEYS.add(_build_sync_key(query_label))
             if query_label in params:
                 vp_list = [_trans_query_params(i) for i in params[query_label]]
-                PARAM_TRANS_DICT[f](vp_list, bargs)
-            v = f(**bargs)  # type: ignore
+                PARAM_TRANS_DICT[st_element](vp_list, bargs)
+            v = st_element(**bargs)  # type: ignore
             params.update({query_label: v})
             st.experimental_set_query_params(**params)
             return v
         else:
-            return f(*args, **kwargs)
+            return st_element(*args, **kwargs)
 
     return decorated
 

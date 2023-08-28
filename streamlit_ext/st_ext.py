@@ -2,9 +2,19 @@ import base64
 import io
 import re
 import uuid
-from typing import Optional, Union
+from typing import BinaryIO, Optional, TextIO, Union
 
-from streamlit.elements.button import DownloadButtonDataType
+import streamlit as st
+from packaging import version
+
+try:
+    # if version < 1.26
+    if version.parse(st.__version__) < version.parse("1.26.0"):
+        from streamlit.elements.button import DownloadButtonDataType
+    else:
+        from streamlit.elements.widgets.button import DownloadButtonDataType
+except ModuleNotFoundError:
+    DownloadButtonDataType = Union[str, bytes, TextIO, BinaryIO, io.RawIOBase]
 
 try:
     import openpyxl  # noqa: F401 # needed for pd.to_excel
@@ -15,7 +25,6 @@ try:
 except ImportError:
     HAS_PD = False
 
-import streamlit as st
 
 DownloadButtonDataType = Union[DownloadButtonDataType, "pd.DataFrame", "Styler"]
 

@@ -11,7 +11,11 @@ from streamlit.runtime.state.common import GENERATED_WIDGET_ID_PREFIX
 try:
     import streamlit.state.widgets as stw
 except ImportError:
-    import streamlit.runtime.state.widgets as stw
+    # if version < 1.26
+    if version.parse(st.__version__) < version.parse("1.26.0"):
+        import streamlit.runtime.state.widgets as stw
+    else:
+        import streamlit.runtime.state.common as stw
 
 
 SYNCED_QUERY_KEYS = set()

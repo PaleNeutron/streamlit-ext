@@ -15,18 +15,14 @@ try:
         from streamlit.elements.widgets.button import DownloadButtonDataType
 except ModuleNotFoundError:
     DownloadButtonDataType = Union[str, bytes, TextIO, BinaryIO, io.RawIOBase]
-
 try:
-    import openpyxl  # noqa: F401 # needed for pd.to_excel
     import pandas as pd
-    from pandas.io.formats.style import Styler
 
-    HAS_PD = True
-except ImportError:
-    HAS_PD = False
-
-
-DownloadButtonDataType = Union[DownloadButtonDataType, "pd.DataFrame", "Styler"]
+    DownloadButtonDataType = Union[
+        DownloadButtonDataType, pd.DataFrame, type(pd.DataFrame.style)
+    ]
+except ModuleNotFoundError:
+    pass
 
 
 def set_width(width: str = "46rem") -> None:
@@ -92,7 +88,7 @@ def download_button(
         data.seek(0)
         data_as_bytes = data.read() or b""
         mimetype = mimetype or "application/octet-stream"
-    elif HAS_PD and hasattr(data, "to_excel"):
+    elif hasattr(data, "to_excel"):
         bio = io.BytesIO()
         data.to_excel(bio)
         bio.seek(0)

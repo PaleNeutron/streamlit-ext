@@ -1,4 +1,4 @@
-from datetime import date, datetime, time
+from datetime import datetime, time
 
 import streamlit as st
 
@@ -31,7 +31,7 @@ if option < 10:
 
 st.write("Outside the form")
 
-d = ste.date_input("When's your birthday", date(2019, 7, 6), key="date_input")
+d = ste.date_input("When's your birthday", datetime(2019, 7, 6), key="date_input")
 st.write("Your birthday is:", d)
 
 t = ste.time_input("Set an alarm for", time(8, 45), key="time_input")

@@ -13,7 +13,7 @@ requires-python = ">=3.8"
 
 dynamic = ["version"]
 
-dependencies = ["streamlit", "packaging"]
+dependencies = ["streamlit>=1.30.0", "packaging"]
 
 
 [project.urls]

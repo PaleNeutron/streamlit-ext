@@ -100,17 +100,22 @@ def param_sync_builder(st_element: Callable[[Any], Any]) -> Callable[[Any], Any]
     def decorated(*args: Any, **kwargs: Any) -> Any:
         if "key" in kwargs:
             query_label = kwargs["key"]
-            params = st.experimental_get_query_params()
+            params = st.query_params.to_dict()
             bargs = sig.bind(*args, **kwargs).arguments
             # regist this key to global module，when call _get_widget_id
             # it will generate widget it without default value
             SYNCED_QUERY_KEYS.add(_build_sync_key(query_label))
             if query_label in params:
-                vp_list = [_trans_query_params(i) for i in params[query_label]]
+                qv = st.query_params.get_all(query_label)
+                if isinstance(qv, str):
+                    vp_list = [_trans_query_params(qv)]
+                else:
+                    vp_list = [_trans_query_params(i) for i in qv]
                 PARAM_TRANS_DICT[st_element](vp_list, bargs)
             v = st_element(**bargs)  # type: ignore
-            params.update({query_label: v})
-            st.experimental_set_query_params(**params)
+            # params.update({query_label: v})
+            # st.experimental_set_query_params(**params)
+            st.query_params[query_label] = v
             return v
         else:
             return st_element(*args, **kwargs)

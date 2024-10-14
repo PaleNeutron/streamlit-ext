@@ -7,6 +7,8 @@ from typing import Any, Callable, Dict, KeysView, List, Optional, Union
 import streamlit as st
 from packaging import version
 
+st_version = version.parse(st.__version__)
+
 try:
     from streamlit.runtime.state.common import (
         GENERATED_ELEMENT_ID_PREFIX as ST_ID_PREFIX,
@@ -20,7 +22,7 @@ try:
     import streamlit.state.widgets as stw
 except ImportError:
     # if version < 1.26
-    if version.parse(st.__version__) < version.parse("1.26.0"):
+    if st_version < version.parse("1.26.0"):
         import streamlit.runtime.state.widgets as stw
     else:
         import streamlit.runtime.state.common as stw
@@ -28,12 +30,18 @@ except ImportError:
 
 SYNCED_QUERY_KEYS = set()
 
-if version.parse(st.__version__) < version.parse("1.19.0"):
+if st_version < version.parse("1.19.0"):
     _get_widget_id_func = "_get_widget_id"
 else:
     _get_widget_id_func = "compute_widget_id"
 
-super_get_widget_id = getattr(stw, _get_widget_id_func)
+try:
+    super_get_widget_id = getattr(stw, _get_widget_id_func)
+except AttributeError:
+    # this is for version >= 1.39
+    from streamlit.elements.lib.utils import _compute_element_id
+
+    super_get_widget_id = _compute_element_id
 
 
 def _build_sync_key(user_key: Optional[str]) -> str:

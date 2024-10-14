@@ -6,7 +6,15 @@ from typing import Any, Callable, Dict, KeysView, List, Optional, Union
 
 import streamlit as st
 from packaging import version
-from streamlit.runtime.state.common import GENERATED_WIDGET_ID_PREFIX
+
+try:
+    from streamlit.runtime.state.common import (
+        GENERATED_ELEMENT_ID_PREFIX as ST_ID_PREFIX,
+    )
+except ImportError:
+    from streamlit.runtime.state.common import (
+        GENERATED_WIDGET_ID_PREFIX as ST_ID_PREFIX,
+    )
 
 try:
     import streamlit.state.widgets as stw
@@ -43,7 +51,7 @@ def compute_widget_id_ext(
         # when default value is changed, the widget id will changed
         # and can not sync with real widget in webpage, remove it
         # h.update(element_proto.SerializeToString())
-        return f"{GENERATED_WIDGET_ID_PREFIX}-{h.hexdigest()}-{synced_user_key}"
+        return f"{ST_ID_PREFIX}-{h.hexdigest()}-{synced_user_key}"
     else:
         s: str = super_get_widget_id(element_type, element_proto, user_key)
         return s

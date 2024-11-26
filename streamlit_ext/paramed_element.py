@@ -49,7 +49,7 @@ def _build_sync_key(user_key: Optional[str]) -> str:
 
 
 def compute_widget_id_ext(
-    element_type: str, element_proto: stw.WidgetProto, user_key: Optional[str] = None
+    element_type: str, element_proto: "stw.WidgetProto", user_key: Optional[str] = None
 ) -> str:
     synced_user_key = _build_sync_key(user_key)
     if synced_user_key in SYNCED_QUERY_KEYS:

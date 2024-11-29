@@ -41,6 +41,7 @@ def download_button(
     data: DownloadButtonDataType,
     file_name: Optional[str] = None,
     mime: Optional[str] = None,
+    custom_css: str = "",
 ) -> str:
     """Generates a link to download the given data, suport file-like object and pd.DataFrame.
     Params
@@ -114,6 +115,7 @@ def download_button(
                 border-style: solid;
                 border-color: rgba(49, 51, 63, 0.2);
                 border-image: initial;
+                {custom_css}
             }}
             #{button_id}:hover {{
                 border-color: rgb(246, 51, 102);

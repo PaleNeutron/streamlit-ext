@@ -102,7 +102,7 @@ def download_button(
     button_uuid = str(uuid.uuid4()).replace("-", "")
     button_id = re.sub(r"\d+", "", button_uuid)
 
-    custom_css = f"""
+    button_css = f"""
         <style>
             #{button_id} {{
                 background-color: rgb(255, 255, 255);
@@ -114,8 +114,7 @@ def download_button(
                 border-width: 1px;
                 border-style: solid;
                 border-color: rgba(49, 51, 63, 0.2);
-                border-image: initial;
-                {custom_css}
+                border-image: initial;{custom_css}
             }}
             #{button_id}:hover {{
                 border-color: rgb(246, 51, 102);
@@ -129,7 +128,7 @@ def download_button(
         </style> """
 
     dl_link = (
-        custom_css
+        button_css
         + f'<a class="steDownloadButton" download="{file_name}" id="{button_id}" '
         f'href="data:file/txt;base64,{b64}">{label}</a><br></br>'
     )

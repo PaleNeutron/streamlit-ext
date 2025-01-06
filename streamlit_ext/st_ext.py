@@ -101,29 +101,27 @@ def download_button(
     b64 = base64.b64encode(data_as_bytes).decode()
     button_uuid = str(uuid.uuid4()).replace("-", "")
     button_id = re.sub(r"\d+", "", button_uuid)
-
     button_css = f"""
         <style>
             #{button_id} {{
                 background-color: rgb(255, 255, 255);
                 color: rgb(38, 39, 48);
-                padding: 0.4em 0.6em;
+                padding: 0.25em 0.75em;
                 position: relative;
                 text-decoration: none;
-                border-radius: 4px;
+                border-radius: 0.5rem;
                 border-width: 1px;
                 border-style: solid;
                 border-color: rgba(49, 51, 63, 0.2);
-                border-image: initial;
-                display: inline-block;{custom_css}
+                border-image: initial;{custom_css}
             }}
             #{button_id}:hover {{
-                border-color: rgb(246, 51, 102);
-                color: rgb(246, 51, 102);
+                border-color: rgb(255, 75, 75);
+                color: rgb(255, 75, 75);
             }}
             #{button_id}:active {{
                 box-shadow: none;
-                background-color: rgb(246, 51, 102);
+                background-color: rgb(255, 75, 75);
                 color: white;
                 }}
         </style> """

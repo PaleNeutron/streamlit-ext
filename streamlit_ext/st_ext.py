@@ -114,7 +114,8 @@ def download_button(
                 border-width: 1px;
                 border-style: solid;
                 border-color: rgba(49, 51, 63, 0.2);
-                border-image: initial;{custom_css}
+                border-image: initial;
+                display: inline-block;{custom_css}
             }}
             #{button_id}:hover {{
                 border-color: rgb(246, 51, 102);

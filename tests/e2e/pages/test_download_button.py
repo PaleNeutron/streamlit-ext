@@ -12,5 +12,5 @@ ste.download_button(
     "a long button",
     b"text content",
     "YOUR_STRING.txt",
-    custom_css="display: inline-block;width: 600px;",
+    custom_css="width: 600px;",
 )

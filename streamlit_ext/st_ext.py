@@ -129,8 +129,8 @@ def download_button(
     dl_link = (
         button_css
         + "\n"
-        + f'<a class="steDownloadButton" download="{file_name}" id="{button_id}" '
-        f'href="data:file/txt;base64,{b64}">{label}</a><br></br>'
+        + f'<div><a class="steDownloadButton" download="{file_name}" id="{button_id}" '
+        f'href="data:file/txt;base64,{b64}">{label}</a></div><br></br>'
     )
 
     div_dl_link = f"""<div class="row-widget stDownloadButton">\n{dl_link}\n</div>"""

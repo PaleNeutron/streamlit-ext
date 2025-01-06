@@ -1,4 +1,4 @@
 pandas
 openpyxl
 streamlit
-streamlit-ext
+git+https://github.com/PaleNeutron/streamlit-ext

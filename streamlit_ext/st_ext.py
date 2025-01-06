@@ -106,7 +106,10 @@ def download_button(
     #{button_id} {{
         background-color: rgb(255, 255, 255);
         color: rgb(38, 39, 48);
-        padding: 0.25em 0.75em;
+        padding: 0.5em 0.5em;
+        min-height: 2.5rem;
+        margin-bottom: 1rem;
+        display: inline-block;
         position: relative;
         text-decoration: none;
         border-radius: 0.5rem;
@@ -127,10 +130,9 @@ def download_button(
 </style>"""
 
     dl_link = (
-        button_css
-        + "\n"
-        + f'<div><a class="steDownloadButton" download="{file_name}" id="{button_id}" '
-        f'href="data:file/txt;base64,{b64}">{label}</a></div><br></br>'
+        button_css + "\n" + f"<div>"
+        f'<a  class="steDownloadButton" download="{file_name}" id="{button_id}" '
+        f' href="data:file/txt;base64,{b64}">{label}</a></div>'
     )
 
     div_dl_link = f"""<div class="row-widget stDownloadButton">\n{dl_link}\n</div>"""

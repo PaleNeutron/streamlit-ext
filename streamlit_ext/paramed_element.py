@@ -119,6 +119,12 @@ def checkbox(vp_list: List[Any], bargs: Dict[str, Any]) -> None:
 def multiselect(vp_list: List[Any], bargs: Dict[str, Any]) -> None:
     # v_p = vp_list[0]
     bargs["default"] = vp_list
+    # make sure all element in default are in options, if not add it into options
+    options = list(bargs["options"])
+    for v in vp_list:
+        if v not in options:
+            options.append(v)
+    bargs["options"] = options
 
 
 @trans_regist(st.slider)

@@ -60,6 +60,7 @@ options = ste.multiselect(
     ["Green", "Yellow", "Red", "Blue"],
     ["Yellow", "Red"],
     key="multiselect",
+    accept_new_options=True,
 )
 
 st.write("You selected:", options)

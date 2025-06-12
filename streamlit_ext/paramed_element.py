@@ -1,12 +1,62 @@
+import hashlib
+import importlib
 import inspect
 from datetime import date, datetime, time
 from functools import wraps
-from typing import Any, Callable, Dict, KeysView, List, Optional, Union
+from typing import Any, Callable, Dict, Iterable, KeysView, List, Optional, Union
 
 import streamlit as st
 from packaging import version
+from streamlit.elements.lib.utils import SAFE_VALUES
 
 st_version = version.parse(st.__version__)
+
+
+id_functions = [
+    ("streamlit.elements.lib.utils", "_compute_element_id"),
+    ("streamlit.runtime.state.common", "compute_widget_id"),
+    ("streamlit.runtime.state.widgets", "_get_widget_id"),
+    ("streamlit.runtime.state.widgets", "compute_widget_id"),
+]
+
+for module_name, func_name in id_functions:
+    try:
+        stw_module = importlib.import_module(module_name)
+        super_get_widget_id = getattr(stw_module, func_name)
+        _get_widget_id_func = func_name
+        break
+    except (ImportError, AttributeError):
+        continue
+
+ST_ID_PREFIX = getattr(stw_module, "GENERATED_ELEMENT_ID_PREFIX", "$$ID")
+
+SYNCED_QUERY_KEYS = set()
+
+
+def _build_sync_key(user_key: Optional[str]) -> str:
+    return f"SYNC_{user_key}"
+
+
+def compute_widget_id_ext(
+    element_type: str,
+    user_key: str | None = None,
+    **kwargs: SAFE_VALUES | Iterable[SAFE_VALUES],
+) -> str:
+    synced_user_key = _build_sync_key(user_key)
+    if synced_user_key in SYNCED_QUERY_KEYS:
+        h = hashlib.new("md5")
+        h.update(element_type.encode("utf-8"))
+        # element_proto.SerializeToString contains the widget's default value
+        # when default value is changed, the widget id will changed
+        # and can not sync with real widget in webpage, remove it
+        # h.update(element_proto.SerializeToString())
+        return f"{ST_ID_PREFIX}-{h.hexdigest()}-{synced_user_key}"
+    else:
+        s: str = super_get_widget_id(element_type, user_key, **kwargs)
+        return s
+
+
+setattr(stw_module, _get_widget_id_func, compute_widget_id_ext)
 
 
 def index2(x: Any, somelist: Union[List[Any], KeysView[Any]]) -> Optional[int]:
@@ -61,6 +111,7 @@ def param_sync_builder(st_element: Callable[[Any], Any]) -> Callable[[Any], Any]
             bargs = sig.bind(*args, **kwargs).arguments
             # regist this key to global module，when call _get_widget_id
             # it will generate widget it without default value
+            SYNCED_QUERY_KEYS.add(_build_sync_key(query_label))
             if query_label in params:
                 qv = st.query_params.get_all(query_label)
                 if isinstance(qv, str):

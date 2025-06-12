@@ -8,12 +8,12 @@ description = "Small handy widgets for streamlit, e.g. download button which won
 readme = "README.md"
 authors = [{ name = "John Lyu", email = "paleneutron@outlook.com" }]
 keywords = ["streamlit", "widgets"]
-license = { text = "MIT" }
+license = "MIT"
 requires-python = ">=3.8"
 
 dynamic = ["version"]
 
-dependencies = ["streamlit>=1.30.0", "packaging"]
+dependencies = ["streamlit>=1.39.0", "packaging"]
 
 
 [project.urls]

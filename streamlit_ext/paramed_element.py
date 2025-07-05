@@ -39,7 +39,7 @@ def _build_sync_key(user_key: Optional[str]) -> str:
 
 def compute_widget_id_ext(
     element_type: str,
-    user_key: str | None = None,
+    user_key: Optional[str] = None,
     **kwargs: SAFE_VALUES | Iterable[SAFE_VALUES],
 ) -> str:
     synced_user_key = _build_sync_key(user_key)

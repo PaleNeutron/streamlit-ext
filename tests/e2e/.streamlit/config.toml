@@ -1,0 +1,47 @@
+[theme]
+
+# # The preset Streamlit theme that your custom theme inherits from.
+# # This can be one of the following: "light" or "dark".
+# base = "light"
+
+# # Primary accent color.
+# primaryColor = "#061366"
+
+# # Background color of the app.
+# backgroundColor = "#30F2F5"
+
+# # Background color used for most interactive widgets.
+# # secondaryBackgroundColor = "#FFFF0F"
+
+# # Color used for almost all text.
+# textColor = "#003300"
+
+# # Color used for all links.
+# linkColor = "#FF0000"
+# # The color of the border around elements.
+# borderColor = "#E020E0"
+
+# # The radius used as basis for the corners of most UI elements.
+# # This can be one of the following:
+# # - "none"
+# # - "small"
+# # - "medium"
+# # - "large"
+# # - "full"
+# # - The number in pixels or rem.
+# # For example, you can use "10px", "0.5rem", or "2rem". To follow best
+# # practices, use rem instead of pixels when specifying a numeric size.
+# baseRadius = "large"
+
+# # The radius used as basis for the corners of buttons.
+# # This can be one of the following:
+# # - "none"
+# # - "small"
+# # - "medium"
+# # - "large"
+# # - "full"
+# # - The number in pixels or rem.
+# # For example, you can use "10px", "0.5rem", or "2rem". To follow best
+# # practices, use rem instead of pixels when specifying a numeric size.
+# # If no button radius is set, Streamlit uses `theme.baseRadius` instead.
+# buttonRadius = "large"

@@ -36,6 +36,70 @@ def set_width(width: str = "46rem") -> None:
     st.markdown(styl, unsafe_allow_html=True)
 
 
+LIGHT_THEME = {
+    "primaryColor": "#ff4b4b",
+    "backgroundColor": "#ffffff",
+    "secondaryBackgroundColor": "#f0f2f6",
+    "textColor": "#31333F",
+    "bodyFont": '"Source Sans", sans-serif',
+    "base": "light",
+    "fadedText05": "rgba(49, 51, 63, 0.1)",
+    "fadedText10": "rgba(49, 51, 63, 0.2)",
+    "fadedText20": "rgba(49, 51, 63, 0.3)",
+    "fadedText40": "rgba(49, 51, 63, 0.4)",
+    "fadedText60": "rgba(49, 51, 63, 0.6)",
+    "bgMix": "rgba(248, 249, 251, 1)",
+    "darkenedBgMix100": "hsla(220, 27%, 68%, 1)",
+    "darkenedBgMix25": "rgba(151, 166, 195, 0.25)",
+    "darkenedBgMix15": "rgba(151, 166, 195, 0.15)",
+    "lightenedBg05": "hsla(0, 0%, 100%, 1)",
+    "font": '"Source Sans", sans-serif',
+    "borderColor": "rgba(49, 51, 63, 0.2)",
+}
+
+DARK_THEME = {
+    "primaryColor": "#ff4b4b",
+    "backgroundColor": "#0e1117",
+    "secondaryBackgroundColor": "#262730",
+    "textColor": "#fafafa",
+    "bodyFont": '"Source Sans", sans-serif',
+    "base": "dark",
+    "fadedText05": "rgba(250, 250, 250, 0.1)",
+    "fadedText10": "rgba(250, 250, 250, 0.2)",
+    "fadedText20": "rgba(250, 250, 250, 0.3)",
+    "fadedText40": "rgba(250, 250, 250, 0.4)",
+    "fadedText60": "rgba(250, 250, 250, 0.6)",
+    "bgMix": "rgba(26, 28, 36, 1)",
+    "darkenedBgMix100": "hsla(228, 16%, 72%, 1)",
+    "darkenedBgMix25": "rgba(172, 177, 195, 0.25)",
+    "darkenedBgMix15": "rgba(172, 177, 195, 0.15)",
+    "lightenedBg05": "hsla(220, 24%, 10%, 1)",
+    "font": '"Source Sans", sans-serif',
+    "borderColor": "rgba(250, 250, 250, 0.2)",
+}
+
+THEME = {
+    "light": LIGHT_THEME,
+    "dark": DARK_THEME,
+}
+
+
+def _get_option(key: str, default: Optional[str] = None) -> Optional[str]:
+    """Get a Streamlit option value, with a fallback to a default value."""
+    ret = st.get_option(key)
+    if ret is None:
+        theme_key = key.split(".")[-1]
+        theme_type = st.context.theme.type
+        if theme_type in THEME and theme_key in THEME[theme_type]:
+            return THEME[theme_type][theme_key]
+        elif default is not None:
+            return default
+        else:
+            return None
+    else:
+        return ret if isinstance(ret, str) else str(ret)
+
+
 def download_button(
     label: str,
     data: DownloadButtonDataType,
@@ -104,11 +168,15 @@ def download_button(
     b64 = base64.b64encode(data_as_bytes).decode()
     button_uuid = str(uuid.uuid4()).replace("-", "")
     button_id = re.sub(r"\d+", "", button_uuid)
+    primaryColor = _get_option("theme.primaryColor")
+    backgroundColor = _get_option("theme.backgroundColor")
+    borderColor = _get_option("theme.borderColor", "rgba(49, 51, 63, 0.2)")
+    textColor = _get_option("theme.textColor")
     button_css = f"""
 <style>
     #{button_id} {{
-        background-color: rgb(255, 255, 255);
-        color: rgb(38, 39, 48);
+        background-color: {backgroundColor};
+        color: {textColor};
         padding: 0.5em 0.5em;
         min-height: 2.5rem;
         margin-bottom: 1rem;
@@ -118,16 +186,16 @@ def download_button(
         border-radius: 0.5rem;
         border-width: 1px;
         border-style: solid;
-        border-color: rgba(49, 51, 63, 0.2);
+        border-color: {borderColor};
         border-image: initial;{custom_css}
     }}
     #{button_id}:hover {{
-        border-color: rgb(255, 75, 75);
-        color: rgb(255, 75, 75);
+        border-color: {primaryColor};
+        color: {primaryColor};
     }}
     #{button_id}:active {{
         box-shadow: none;
-        background-color: rgb(255, 75, 75);
+        background-color: {primaryColor};
         color: white;
         }}
 </style>"""

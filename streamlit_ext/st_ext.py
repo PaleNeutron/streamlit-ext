@@ -49,7 +49,10 @@ def download_button(
     Args:
         button_text: text show on page.
         data: file-like object or pd.DataFrame.
-        download_filename: filename and extension of file. e.g. mydata.csv,
+        file_name: name of the file to be downloaded.
+        mime: MIME type of the file, if not provided, will be guessed based on data type.
+        custom_css: custom css to be applied to the button.
+
 
     Raises:
         RuntimeError: when data type is not supported

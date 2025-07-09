@@ -2,27 +2,21 @@ import base64
 import io
 import re
 import uuid
-from typing import BinaryIO, Optional, TextIO, Union
+from typing import TYPE_CHECKING, BinaryIO, Optional, TextIO, Union
 
 import streamlit as st
-from packaging import version
 
-try:
-    # if version < 1.26
-    if version.parse(st.__version__) < version.parse("1.26.0"):
-        from streamlit.elements.button import DownloadButtonDataType
-    else:
-        from streamlit.elements.widgets.button import DownloadButtonDataType
-except ModuleNotFoundError:
-    DownloadButtonDataType = Union[str, bytes, TextIO, BinaryIO, io.RawIOBase]
-try:
+# from streamlit.elements.widgets.button import DownloadButtonDataType
+
+# The base type definition remains the same
+DownloadButtonDataType = Union[str, bytes, TextIO, BinaryIO, io.RawIOBase]
+
+# Now, define the extended type alias conditionally
+if TYPE_CHECKING:
     import pandas as pd
+    from pandas.io.formats.style import Styler
 
-    DownloadButtonDataType = Union[
-        DownloadButtonDataType, pd.DataFrame, type(pd.DataFrame.style)
-    ]
-except ModuleNotFoundError:
-    pass
+SteDownloadButtonDataType = Union[DownloadButtonDataType, "pd.DataFrame", "Styler"]
 
 
 def set_width(width: str = "46rem") -> None:
@@ -86,10 +80,16 @@ THEME = {
 
 def _get_option(key: str, default: Optional[str] = None) -> Optional[str]:
     """Get a Streamlit option value, with a fallback to a default value."""
+    # this function should be upgraded to use streamlit api to get theme
+    # once roadmap is implemented `Python API to read active theme information`
     ret = st.get_option(key)
     if ret is None:
         theme_key = key.split(".")[-1]
-        theme_type = st.context.theme.type
+        if hasattr(st.context, "theme"):
+            theme_type = st.context.theme.type
+        else:
+            # temporary fallback for older Streamlit versions
+            theme_type = "light"
         if theme_type in THEME and theme_key in THEME[theme_type]:
             return THEME[theme_type][theme_key]
         elif default is not None:
@@ -102,7 +102,7 @@ def _get_option(key: str, default: Optional[str] = None) -> Optional[str]:
 
 def download_button(
     label: str,
-    data: DownloadButtonDataType,
+    data: SteDownloadButtonDataType,
     file_name: Optional[str] = None,
     mime: Optional[str] = None,
     custom_css: str = "",
@@ -158,7 +158,7 @@ def download_button(
         mimetype = mimetype or "application/octet-stream"
     elif hasattr(data, "to_excel"):
         bio = io.BytesIO()
-        data.to_excel(bio)
+        data.to_excel(bio)  # type: ignore
         bio.seek(0)
         data_as_bytes = bio.read()
         mimetype = mimetype or "application/octet-stream"

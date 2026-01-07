@@ -212,9 +212,34 @@ def text_area(vp_list: List[Any], bargs: Dict[str, Any]) -> None:
 @trans_regist(st.date_input)
 def date_input(vp_list: List[Any], bargs: Dict[str, Any]) -> None:
     if len(vp_list) == 1:
-        bargs["value"] = vp_list[0]
+        value = vp_list[0]
     elif len(vp_list) == 2:
-        bargs["value"] = vp_list
+        value = vp_list
+    else:
+        return
+
+    # Clamp value to the valid range defined by min_value and max_value
+    min_value = bargs.get("min_value")
+    max_value = bargs.get("max_value")
+
+    if isinstance(value, date) and not isinstance(value, datetime):
+        # Handle single date value
+        if min_value is not None and value < min_value:
+            value = min_value
+        if max_value is not None and value > max_value:
+            value = max_value
+        bargs["value"] = value
+    elif isinstance(value, (list, tuple)):
+        # Handle date range (list/tuple of dates)
+        clamped_value = []
+        for v in value:
+            if isinstance(v, date) and not isinstance(v, datetime):
+                if min_value is not None and v < min_value:
+                    v = min_value
+                if max_value is not None and v > max_value:
+                    v = max_value
+            clamped_value.append(v)
+        bargs["value"] = clamped_value
 
 
 @trans_regist(st.time_input)
